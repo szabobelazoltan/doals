@@ -1,0 +1,363 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://doals.hbc.org/ws.xsd"
+            xmlns:bs="http://hbc.org/base.xsd"
+            targetNamespace="http://doals.hbc.org/ws.xsd"
+            elementFormDefault="qualified">
+    <xsd:import namespace="http://hbc.org/base.xsd" schemaLocation="base.xsd"/>
+
+    <xsd:simpleType name="AccessRoleEnum">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="OWNER"/>
+            <xsd:enumeration value="READONLY"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="Permissions">
+        <xsd:list itemType="xsd:string"/>
+    </xsd:simpleType>
+
+    <xsd:complexType name="Nodes">
+        <xsd:sequence>
+            <xsd:element name="node" type="bs:DirectoryEntryBasicInfoDto" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="AccessDto">
+        <xsd:sequence>
+            <xsd:element name="userId" type="bs:UserIdType"/>
+            <xsd:element name="role" type="tns:AccessRoleEnum"/>
+            <xsd:element name="permissions" type="tns:Permissions"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="Accesses">
+        <xsd:sequence>
+            <xsd:element name="access" type="tns:AccessDto" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="DirectoryEntryDetailsDto">
+        <xsd:sequence>
+            <xsd:element name="basicInfo" type="bs:DirectoryEntryBasicInfoDto"/>
+            <xsd:element name="location" type="tns:Nodes"/>
+            <xsd:element name="access" type="tns:Accesses"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="DirectoryEntryListItemDto">
+        <xsd:sequence>
+            <xsd:element name="basicInfo" type="bs:DirectoryEntryBasicInfoDto"/>
+            <xsd:element name="permissions" type="tns:Permissions"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="PageSizeType">
+        <xsd:restriction base="xsd:int"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="PageIndexType">
+        <xsd:restriction base="xsd:int"/>
+    </xsd:simpleType>
+
+    <xsd:complexType name="DirectoryEntriesPageDto">
+        <xsd:sequence>
+            <xsd:element name="pageSize" type="tns:PageSizeType"/>
+            <xsd:element name="pageIndex" type="tns:PageIndexType"/>
+            <xsd:element name="totalPageCount" type="xsd:int"/>
+            <xsd:element name="previousPage" type="xsd:boolean"/>
+            <xsd:element name="nextPage" type="xsd:boolean"/>
+            <xsd:element name="items">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="item" type="tns:DirectoryEntryListItemDto" minOccurs="0" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="PageParametersDto">
+        <xsd:sequence>
+            <xsd:element name="pageSize" type="tns:PageSizeType"/>
+            <xsd:element name="pageIndex" type="tns:PageIndexType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="GetUserRootRq">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:RequestBase"></xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetUserRootRp">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:ResponseBase">
+                    <xsd:sequence>
+                        <xsd:element name="body" type="tns:DirectoryEntryDetailsDto"/>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetDirectoryEntryDetailsRq">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:RequestBase">
+                    <xsd:sequence>
+                        <xsd:element name="body">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="id" type="bs:DirectoryEntryIdType"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="GetDirectoryEntryDetailsRp">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:ResponseBase">
+                    <xsd:sequence>
+                        <xsd:element name="body" type="tns:DirectoryEntryDetailsDto"/>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ListDirectoryEntriesRq">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:RequestBase">
+                    <xsd:sequence>
+                        <xsd:element name="id" type="bs:DirectoryEntryIdType"/>
+                        <xsd:element name="pageParameters" type="tns:PageParametersDto"/>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ListDirectoryEntriesRp">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:ResponseBase">
+                    <xsd:sequence>
+                        <xsd:element name="body" type="tns:DirectoryEntriesPageDto"/>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:simpleType name="NameComparisonModeEnum">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="EQUALS"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="TimeStampRangeDto">
+        <xsd:sequence>
+            <xsd:element name="start" type="bs:TimeStampType"/>
+            <xsd:element name="end" type="bs:TimeStampType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="SearchParametersDto">
+        <xsd:sequence>
+            <xsd:element name="name" type="xsd:string"/>
+            <xsd:element name="nameComparisonMode" type="tns:NameComparisonModeEnum"/>
+            <xsd:element name="creationDateTimeRange" type="tns:TimeStampRangeDto"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="SearchDirectoryEntriesRq">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:RequestBase">
+                    <xsd:sequence>
+                        <xsd:element name="body">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="searchParameters" type="tns:SearchParametersDto"/>
+                                    <xsd:element name="pageParameters" type="tns:PageParametersDto"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="SearchDirectoryEntriesRp">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:ResponseBase">
+                    <xsd:sequence>
+                        <xsd:element name="body" type="tns:DirectoryEntriesPageDto"/>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="DeleteDirectoryEntryRq">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:RequestBase">
+                    <xsd:sequence>
+                        <xsd:element name="body">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="id" type="bs:DirectoryEntryIdType"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="DeleteDirectoryEntryRp">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:ResponseBase">
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="UndeleteDirectoryEntryRq">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:RequestBase">
+                    <xsd:sequence>
+                        <xsd:element name="body">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="id" type="bs:DirectoryEntryIdType"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="UndeleteDirectoryEntryRp">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:ResponseBase">
+                    <xsd:sequence>
+                        <xsd:element name="body" type="tns:DirectoryEntryDetailsDto"/>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="CreateDirectoryEntryRq">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:RequestBase">
+                    <xsd:sequence>
+                        <xsd:element name="body">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="name" type="xsd:string"/>
+                                    <xsd:element name="type" type="bs:DirectoryEntryTypeEnum"/>
+                                    <xsd:element name="parentId" type="bs:DirectoryEntryIdType"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="CreateDirectoryEntryRp">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:ResponseBase">
+                    <xsd:sequence>
+                        <xsd:element name="body" type="tns:DirectoryEntryDetailsDto"/>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="RenameDirectoryEntryRq">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:RequestBase">
+                    <xsd:sequence>
+                        <xsd:element name="body">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="id" type="bs:DirectoryEntryIdType"/>
+                                    <xsd:element name="name" type="xsd:string"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="RenameDirectoryEntryRp">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:ResponseBase">
+                    <xsd:sequence>
+                        <xsd:element name="body" type="tns:DirectoryEntryDetailsDto"/>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="MoveDirectoryEntryRq">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:RequestBase">
+                    <xsd:sequence>
+                        <xsd:element name="body">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="id" type="bs:DirectoryEntryIdType"/>
+                                    <xsd:element name="parentId" type="bs:DirectoryEntryIdType"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="MoveDirectoryEntryRp">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="bs:ResponseBase">
+                    <xsd:sequence>
+                        <xsd:element name="body" type="tns:DirectoryEntryDetailsDto"/>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

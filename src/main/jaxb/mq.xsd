@@ -1,0 +1,51 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://doals.hbc.org/ws.xsd"
+            xmlns:bs="http://hbc.org/base.xsd"
+            targetNamespace="http://doals.hbc.org/ws.xsd"
+            elementFormDefault="qualified">
+    <xsd:import namespace="http://hbc.org/base.xsd" schemaLocation="base.xsd"/>
+
+    <xsd:simpleType name="ChangedAttributeEnum">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="NAME"/>
+            <xsd:enumeration value="LOCATION"/>
+            <xsd:enumeration value="STATUS"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="DirectoryEntryAttributeChangeDto">
+        <xsd:sequence>
+            <xsd:element name="changedAttribute" type="tns:ChangedAttributeEnum"/>
+            <xsd:element name="value" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="PublishDirectoryEntryAttributeChangeDg">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="body">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="directoryEntry" type="bs:DirectoryEntryBasicInfoDto"/>
+                            <xsd:element name="attribute" type="tns:DirectoryEntryAttributeChangeDto"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="PublishDirectoryEntryContentChangeDg">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="body">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="id" type="bs:DirectoryEntryIdType"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

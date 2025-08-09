@@ -1,0 +1,79 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://hbc.org/base.xsd"
+            targetNamespace="http://hbc.org/base.xsd"
+            elementFormDefault="qualified">
+    <xsd:complexType name="RequestBase">
+        <xsd:sequence>
+            <xsd:element name="header" type="tns:RequestHeaderDto"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ResponseBase">
+        <xsd:sequence>
+            <xsd:element name="header" type="tns:ResponseHeaderDto"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="RequestHeaderDto">
+        <xsd:sequence>
+            <xsd:element name="userId" type="tns:UserIdType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ResponseHeaderDto">
+        <xsd:sequence>
+            <xsd:element name="success" type="xsd:boolean"/>
+            <xsd:element name="resultCode" type="tns:ResultCodeType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="DirectoryEntryBasicInfoDto">
+        <xsd:sequence>
+            <xsd:element name="id" type="tns:DirectoryEntryIdType"/>
+            <xsd:element name="type" type="tns:DirectoryEntryTypeEnum"/>
+            <xsd:element name="status" type="tns:DirectoryEntryStatusEnum"/>
+            <xsd:element name="name" type="xsd:string"/>
+            <xsd:element name="creationDateTime" type="tns:TimeStampType"/>
+            <xsd:element name="modificationDateTime" type="tns:TimeStampType"/>
+            <xsd:element name="deletionDateTime" type="tns:TimeStampType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="UserIdType">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="36"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="DirectoryEntryIdType">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="36"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="ResultCodeType">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="50"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="TimeStampType">
+        <xsd:restriction base="xsd:dateTime"/>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="DirectoryEntryTypeEnum">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="DIRECTORY"/>
+            <xsd:enumeration value="FILE"/>
+            <xsd:enumeration value="LINK"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="DirectoryEntryStatusEnum">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ACTIVE"/>
+            <xsd:enumeration value="INACTIVE"/>
+            <xsd:enumeration value="REMOVED"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>
