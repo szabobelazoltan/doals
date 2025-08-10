@@ -145,4 +145,8 @@ public class DirectoryEntry {
                 ", deletionTimeStamp=" + deletionTimeStamp +
                 '}';
     }
+
+    public boolean isDirectory() {
+        return DirectoryEntryType.DIRECTORY.equals(this.type);
+    }
 }

@@ -2,8 +2,6 @@ package hu.szbz.hbc.doals.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,9 +21,8 @@ public class Access {
     @Column(name = "PERMISSION")
     private int permissionCode;
 
-    @Column(name = "ROLE")
-    @Enumerated(EnumType.ORDINAL)
-    private AccessRole role;
+    @Column(name = "OWNERSHIP")
+    private boolean ownership;
 
     @ManyToOne
     @JoinColumn(name = "ACTOR_ID", referencedColumnName = "ID")
@@ -51,12 +48,12 @@ public class Access {
         this.permissionCode = permissionCode;
     }
 
-    public AccessRole getRole() {
-        return role;
+    public boolean isOwnership() {
+        return ownership;
     }
 
-    public void setRole(AccessRole role) {
-        this.role = role;
+    public void setOwnership(boolean ownership) {
+        this.ownership = ownership;
     }
 
     public Actor getActor() {
@@ -79,12 +76,12 @@ public class Access {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Access access = (Access) o;
-        return id == access.id && permissionCode == access.permissionCode && role == access.role && Objects.equals(actor, access.actor) && Objects.equals(entry, access.entry);
+        return id == access.id && permissionCode == access.permissionCode && ownership == access.ownership && Objects.equals(actor, access.actor) && Objects.equals(entry, access.entry);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, permissionCode, role, actor, entry);
+        return Objects.hash(id, permissionCode, ownership, actor, entry);
     }
 
     @Override
@@ -92,7 +89,7 @@ public class Access {
         return "Access{" +
                 "id=" + id +
                 ", permissionCode=" + permissionCode +
-                ", role=" + role +
+                ", ownership=" + ownership +
                 ", actor=" + actor +
                 ", entry=" + entry +
                 '}';
