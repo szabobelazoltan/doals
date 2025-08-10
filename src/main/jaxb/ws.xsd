@@ -76,10 +76,26 @@
         </xsd:sequence>
     </xsd:complexType>
 
+    <xsd:simpleType name="SortFieldEnum">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="NAME"/>
+            <xsd:enumeration value="CREATION_DATETIME"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="SortDirectionEnum">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ASCENDING"/>
+            <xsd:enumeration value="DESCENDING"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
     <xsd:complexType name="PageParametersDto">
         <xsd:sequence>
             <xsd:element name="pageSize" type="tns:PageSizeType"/>
             <xsd:element name="pageIndex" type="tns:PageIndexType"/>
+            <xsd:element name="sortField" type="tns:SortFieldEnum"/>
+            <xsd:element name="sortDirection" type="tns:SortDirectionEnum"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -164,6 +180,13 @@
         </xsd:restriction>
     </xsd:simpleType>
 
+    <xsd:complexType name="NameConditionDto">
+        <xsd:sequence>
+            <xsd:element name="name" type="xsd:string"/>
+            <xsd:element name="nameComparisonMode" type="tns:NameComparisonModeEnum"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
     <xsd:complexType name="TimeStampRangeDto">
         <xsd:sequence>
             <xsd:element name="start" type="bs:TimeStampType"/>
@@ -173,9 +196,9 @@
 
     <xsd:complexType name="SearchParametersDto">
         <xsd:sequence>
-            <xsd:element name="name" type="xsd:string"/>
-            <xsd:element name="nameComparisonMode" type="tns:NameComparisonModeEnum"/>
-            <xsd:element name="creationDateTimeRange" type="tns:TimeStampRangeDto"/>
+<!--            <xsd:element name="location" type="bs:DirectoryEntryIdType"/>-->
+            <xsd:element name="name" type="tns:NameConditionDto"/>
+            <xsd:element name="creationDateTime" type="tns:TimeStampRangeDto"/>
         </xsd:sequence>
     </xsd:complexType>
 
