@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface AccessRepository extends CrudRepository<Access, Integer> {
 
     Optional<Access> findByActorAndEntry(Actor actor, DirectoryEntry entry);
+
+    Optional<Boolean> findOwnershipByActorAndEntry(Actor actor, DirectoryEntry entry);
 }

@@ -75,6 +75,12 @@
 			<version>2.2.224</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.instancio</groupId>
+			<artifactId>instancio-core</artifactId>
+			<version>5.5.0</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
