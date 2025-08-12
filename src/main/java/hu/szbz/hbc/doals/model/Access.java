@@ -94,4 +94,13 @@ public class Access {
                 ", entry=" + entry +
                 '}';
     }
+
+    public static Access createNew(Actor actor, DirectoryEntry entry, boolean ownership, int permissionCode) {
+        final Access entity = new Access();
+        entity.setActor(actor);
+        entity.setEntry(entry);
+        entity.setOwnership(ownership);
+        entity.setPermissionCode(permissionCode);
+        return entity;
+    }
 }

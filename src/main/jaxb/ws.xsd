@@ -12,8 +12,10 @@
         </xsd:restriction>
     </xsd:simpleType>
 
-    <xsd:simpleType name="Permissions">
-        <xsd:list itemType="xsd:string"/>
+    <xsd:simpleType name="PermissionsType">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="3"/>
+        </xsd:restriction>
     </xsd:simpleType>
 
     <xsd:complexType name="Nodes">
@@ -26,7 +28,7 @@
         <xsd:sequence>
             <xsd:element name="userId" type="bs:UserIdType"/>
             <xsd:element name="role" type="tns:AccessRoleEnum"/>
-            <xsd:element name="permissions" type="tns:Permissions"/>
+            <xsd:element name="permissions" type="tns:PermissionsType"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -47,7 +49,7 @@
     <xsd:complexType name="DirectoryEntryListItemDto">
         <xsd:sequence>
             <xsd:element name="basicInfo" type="bs:DirectoryEntryBasicInfoDto"/>
-            <xsd:element name="permissions" type="tns:Permissions"/>
+            <xsd:element name="permissions" type="tns:PermissionsType"/>
         </xsd:sequence>
     </xsd:complexType>
 

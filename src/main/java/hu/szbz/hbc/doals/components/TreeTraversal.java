@@ -8,17 +8,18 @@ import org.springframework.stereotype.Component;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.function.Predicate;
 
 @Component
 public class TreeTraversal {
     @Autowired
     private DirectoryEntryRepository repository;
 
-    public List<DirectoryEntry> traverseAndList(DirectoryEntry rootNode) {
-        return traverseAndProcess(rootNode, new FlattenProcessor());
+    public List<DirectoryEntry> traverseDownwardsAndList(DirectoryEntry rootNode) {
+        return traverseDownwardsAndProcess(rootNode, new FlattenProcessor());
     }
 
-    public <R> R traverseAndProcess(DirectoryEntry rootNode, TreeProcessor<R> processor) {
+    public <R> R traverseDownwardsAndProcess(DirectoryEntry rootNode, TreeProcessor<R> processor) {
         R result = processor.initResult();
         Queue<DirectoryEntry> queue = new LinkedList<>();
         queue.offer(rootNode);
@@ -30,6 +31,20 @@ public class TreeTraversal {
             }
         }
         return result;
+    }
+
+    public <R> R traverseUpwardsAndProcess(DirectoryEntry leafNode, TreeProcessor<R> processor, Predicate<DirectoryEntry> exitCondition) {
+        R result = processor.initResult();
+        DirectoryEntry currentNode = leafNode;
+        while (exitCondition.test(leafNode)) {
+            result = processor.processNode(currentNode, result);
+            currentNode = currentNode.getParent();
+        }
+        return result;
+    }
+
+    public <R> R traverseUpwardsAndProcess(DirectoryEntry leafNode, TreeProcessor<R> processor) {
+        return traverseUpwardsAndProcess(leafNode, processor, node -> node != null);
     }
 
     public interface TreeProcessor<T> {

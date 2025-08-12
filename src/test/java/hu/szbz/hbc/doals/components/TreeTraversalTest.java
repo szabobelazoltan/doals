@@ -26,7 +26,7 @@ public class TreeTraversalTest {
     private TreeTraversal traversal;
 
     @Test
-    public void test_traverseAndProcess() {
+    public void test_traverseDownwardsAndProcess() {
         final DirectoryEntry root = Instancio.of(DirectoryEntry.class)
                 .set(field(DirectoryEntry::getId), 1)
                 .set(field(DirectoryEntry::getExternalId), "37973987-7908-4ea7-914f-c1408332fe53")
@@ -40,7 +40,7 @@ public class TreeTraversalTest {
         final List<DirectoryEntry> children = List.of(child);
         when(repository.findAllByParent(root)).thenReturn(children);
 
-        final List<DirectoryEntry> result = traversal.traverseAndList(root);
+        final List<DirectoryEntry> result = traversal.traverseDownwardsAndList(root);
 
         assertNotNull(result);
         assertEquals(2, result.size());

@@ -149,4 +149,16 @@ public class DirectoryEntry {
     public boolean isDirectory() {
         return DirectoryEntryType.DIRECTORY.equals(this.type);
     }
+
+    public static DirectoryEntry createNew(String externalId, DirectoryEntryType type, DirectoryEntry parent, String name) {
+        final DirectoryEntry entity = new DirectoryEntry();
+        entity.setExternalId(externalId);
+        entity.setType(type);
+        entity.setParent(parent);
+        entity.setName(name);
+        entity.setStatus(DirectoryEntryStatus.ACTIVE);
+        entity.setCreationTimeStamp(OffsetDateTime.now());
+        entity.setModificationTimeStamp(entity.getCreationTimeStamp());
+        return entity;
+    }
 }

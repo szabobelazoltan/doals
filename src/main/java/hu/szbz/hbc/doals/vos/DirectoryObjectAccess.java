@@ -1,6 +1,7 @@
 package hu.szbz.hbc.doals.vos;
 
+import hu.szbz.hbc.doals.model.Actor;
 import hu.szbz.hbc.doals.model.DirectoryEntry;
 
-public record DirectoryObjectAccess(DirectoryEntry entry, boolean ownership, String permissions) {
+public record DirectoryObjectAccess(Actor actor, DirectoryEntry entry, boolean ownership, String permissions) {
 }

@@ -64,7 +64,7 @@ public class DirectoryObjectProtection {
         }
 
         final String permissionCombination = Permission.mapToCombinationString(calculatedPermission);
-        return new DirectoryObjectAccess(entry, ownership, permissionCombination);
+        return new DirectoryObjectAccess(actor, entry, ownership, permissionCombination);
     }
 
     private int getPermissionCodeForEntry(Actor actor, DirectoryEntry directoryEntry) {
@@ -75,7 +75,7 @@ public class DirectoryObjectProtection {
 
     private int aggregatePermissionsForTree(Actor actor, DirectoryEntry root) {
         final TreeTraversal.TreeProcessor<Integer> treeProcessor = new PermissionAggregatorTreeProcessor(actor);
-        return treeTraversal.traverseAndProcess(root, treeProcessor);
+        return treeTraversal.traverseDownwardsAndProcess(root, treeProcessor);
     }
 
     private class PermissionAggregatorTreeProcessor implements TreeTraversal.TreeProcessor<Integer> {

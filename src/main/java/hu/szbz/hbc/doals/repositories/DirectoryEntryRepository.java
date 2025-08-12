@@ -2,8 +2,6 @@ package hu.szbz.hbc.doals.repositories;
 
 import hu.szbz.hbc.doals.model.Actor;
 import hu.szbz.hbc.doals.model.DirectoryEntry;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -14,8 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface DirectoryEntryRepository extends CrudRepository<DirectoryEntry, Integer>, SearchRepository {
-
-    //Page<DirectoryEntry> findAllByParentPaged(DirectoryEntry parent, PageRequest pageRequest);
 
     Optional<DirectoryEntry> findByExternalId(String externalId);
 
