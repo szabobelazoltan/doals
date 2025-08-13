@@ -156,8 +156,14 @@
             <xsd:complexContent>
                 <xsd:extension base="bs:RequestBase">
                     <xsd:sequence>
-                        <xsd:element name="id" type="bs:DirectoryEntryIdType"/>
-                        <xsd:element name="pageParameters" type="tns:PageParametersDto"/>
+                        <xsd:element name="body">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="id" type="bs:DirectoryEntryIdType"/>
+                                    <xsd:element name="pageParameters" type="tns:PageParametersDto"/>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
                     </xsd:sequence>
                 </xsd:extension>
             </xsd:complexContent>

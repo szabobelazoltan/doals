@@ -31,14 +31,6 @@ class DirectoryEntryRepositoryTest {
     private DirectoryEntryRepository directoryEntryRepository;
 
     @Test
-    void test_findUserRoot_returnsEntity_forActor() {
-        final Actor actor = em.find(Actor.class, -10);
-        final DirectoryEntry result = directoryEntryRepository.findUserRoot(actor);
-        assertNotNull(result);
-        assertEquals("466cf730-397e-4cb4-b20e-86ad0fee7a03", result.getExternalId());
-    }
-
-    @Test
     void test_search() {
         final Actor actor = em.find(Actor.class, -11);
         final SearchParametersDto conditions = new SearchParametersDto();

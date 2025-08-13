@@ -31,11 +31,6 @@ public class DirectoryObjectProtection {
     @Autowired
     private TreeTraversal treeTraversal;
 
-    public Actor getActor(String actorId) {
-        return actorRepository.findByExternalId(actorId)
-                .orElseThrow(() -> new ServiceException(String.format("Actor is not found with id: %s", actorId), ErrorCode.UNKNOWN_ACTOR));
-    }
-
     public DirectoryEntry getEntry(String entryId) {
         return directoryEntryRepository.findByExternalId(entryId)
                 .orElseThrow(() -> new ServiceException(String.format("Directory entry does not exist with id: %s", entryId), ErrorCode.DIRECTORY_ENTRY_NOT_EXISTS));

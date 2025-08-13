@@ -54,4 +54,12 @@ public class Actor {
                 ", externalId='" + externalId + '\'' +
                 '}';
     }
+
+    public Actor(String externalId) {
+        this.externalId = externalId;
+    }
+
+    public Actor() {
+        this(null);
+    }
 }

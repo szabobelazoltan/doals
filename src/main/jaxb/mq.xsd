@@ -48,4 +48,19 @@
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
+
+    <xsd:element name="PublishUserCreatedDg">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="body">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="id" type="bs:UserIdType"/>
+                            <xsd:element name="name" type="xsd:string"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
 </xsd:schema>
