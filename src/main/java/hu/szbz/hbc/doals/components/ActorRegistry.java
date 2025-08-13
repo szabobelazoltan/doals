@@ -16,8 +16,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 public class ActorRegistry {
     private static final int ROOT_PERMISSION = 3;
@@ -30,6 +28,9 @@ public class ActorRegistry {
 
     @Autowired
     private AccessRepository accessRepository;
+
+    @Autowired
+    private ExternalIdGenerator externalIdGenerator;
 
     @Autowired
     private ActorRegistry self;
@@ -49,7 +50,7 @@ public class ActorRegistry {
     public void registerActor(PublishUserCreatedDg.Body actorParams) {
         final Actor actor = actorRepository.save(new Actor(actorParams.getId()));
         final String entryName = actorParams.getName();
-        final String entryId = UUID.randomUUID().toString();
+        final String entryId = externalIdGenerator.generate();
         final DirectoryEntry rootEntry = directoryEntryRepository.save(DirectoryEntry.createNew(entryId, DirectoryEntryType.DIRECTORY, null, entryName));
         final Access access = Access.createNew(actor, rootEntry, true, ROOT_PERMISSION);
         accessRepository.save(access);

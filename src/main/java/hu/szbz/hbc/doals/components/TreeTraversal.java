@@ -36,7 +36,7 @@ public class TreeTraversal {
     public <R> R traverseUpwardsAndProcess(DirectoryEntry leafNode, TreeProcessor<R> processor, Predicate<DirectoryEntry> exitCondition) {
         R result = processor.initResult();
         DirectoryEntry currentNode = leafNode;
-        while (exitCondition.test(leafNode)) {
+        while (exitCondition.test(currentNode)) {
             result = processor.processNode(currentNode, result);
             currentNode = currentNode.getParent();
         }

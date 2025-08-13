@@ -14,7 +14,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
 
 @Component
 public class DirectoryEntryManipulation {
@@ -29,10 +28,13 @@ public class DirectoryEntryManipulation {
     @Autowired
     private TreeTraversal treeTraversal;
 
+    @Autowired
+    private ExternalIdGenerator externalIdGenerator;
+
     @Transactional
     public DirectoryObjectAccess createEntry(Actor actor, DirectoryEntryTypeEnum type, DirectoryEntry parent, String name) {
         final DirectoryEntryType entityType = mapType(type);
-        final String externalId = UUID.randomUUID().toString();
+        final String externalId = externalIdGenerator.generate();
         final DirectoryEntry entry = directoryEntryRepository.save(DirectoryEntry.createNew(externalId, entityType, parent, name));
         final Access access = accessRepository.save(Access.createNew(actor, entry, true, ALL_PERMISSIONS));
         return new DirectoryObjectAccess(actor, entry, access.isOwnership(), Permission.mapToCombinationString(access.getPermissionCode()));
@@ -51,7 +53,16 @@ public class DirectoryEntryManipulation {
     @Transactional
     public void markUndeleted(DirectoryEntry directoryEntry) {
         if (DirectoryEntryStatus.REMOVED.equals(directoryEntry.getStatus())) return;
-        treeTraversal.traverseDownwardsAndProcess(directoryEntry, new StatusMarkerTreeProcessor(DirectoryEntryStatus.ACTIVE));
+        treeTraversal.traverseUpwardsAndProcess(
+                directoryEntry,
+                new UndeletionTreeProcessor(DirectoryEntryStatus.ACTIVE),
+                this::isTopMostParentReached
+        );
+        treeTraversal.traverseDownwardsAndProcess(directoryEntry, new UndeletionTreeProcessor(DirectoryEntryStatus.ACTIVE));
+    }
+
+    private boolean isTopMostParentReached(DirectoryEntry entry) {
+        return entry != null && DirectoryEntryStatus.INACTIVE.equals(entry.getStatus());
     }
 
     private DirectoryEntryType mapType(DirectoryEntryTypeEnum type) {
@@ -77,6 +88,19 @@ public class DirectoryEntryManipulation {
         @Override
         public Void processNode(DirectoryEntry node, Void partialResult) {
             node.setStatus(this.newStatus);
+            return null;
+        }
+    }
+
+    private class UndeletionTreeProcessor extends StatusMarkerTreeProcessor {
+        public UndeletionTreeProcessor(DirectoryEntryStatus newStatus) {
+            super(newStatus);
+        }
+
+        @Override
+        public Void processNode(DirectoryEntry node, Void partialResult) {
+            super.processNode(node, partialResult);
+            node.setDeletionTimeStamp(null);
             return null;
         }
     }

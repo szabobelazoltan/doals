@@ -17,22 +17,32 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.OffsetDateTime;
+import java.util.List;
+
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { TreeTraversal.class, DirectoryEntryManipulation.class })
+@SpringBootTest(classes = {
+        TreeTraversal.class,
+        DirectoryEntryManipulation.class
+})
 class DirectoryEntryManipulationTest {
     @MockitoBean
     private DirectoryEntryRepository directoryEntryRepository;
 
     @MockitoBean
     private AccessRepository accessRepository;
+
+    @MockitoBean
+    private ExternalIdGenerator externalIdGenerator;
 
     @Autowired
     private TreeTraversal treeTraversal;
@@ -60,6 +70,9 @@ class DirectoryEntryManipulationTest {
                 .create();
         when(accessRepository.save(any())).thenReturn(accessResult);
 
+        final String externalId = "foo-x";
+        when(externalIdGenerator.generate()).thenReturn(externalId);
+
         final String name = "foo";
         final DirectoryObjectAccess result = manipulation.createEntry(actor, DirectoryEntryTypeEnum.DIRECTORY, parent, name);
 
@@ -70,7 +83,7 @@ class DirectoryEntryManipulationTest {
         assertEquals("rw", result.permissions());
 
         verify(directoryEntryRepository).save(argThat(e ->
-                e.getExternalId() != null &&
+                externalId.equals(e.getExternalId()) &&
                 DirectoryEntryType.DIRECTORY.equals(e.getType()) &&
                 parent.equals(e.getParent()) &&
                 name.equals(e.getName())));
@@ -79,5 +92,105 @@ class DirectoryEntryManipulationTest {
                 entryResult.equals(a.getEntry()) &&
                 7 == a.getPermissionCode() &&
                 a.isOwnership()));
+    }
+
+    @Test
+    void test_markUndeleted() {
+        final OffsetDateTime deletionDateTime = OffsetDateTime.now();
+        final DirectoryEntry activeParent = Instancio.of(DirectoryEntry.class)
+                .set(field(DirectoryEntry::getExternalId), "AP")
+                .set(field(DirectoryEntry::getType), DirectoryEntryType.DIRECTORY)
+                .set(field(DirectoryEntry::getStatus), DirectoryEntryStatus.ACTIVE)
+                .create();
+        final DirectoryEntry inactiveParent = Instancio.of(DirectoryEntry.class)
+                .set(field(DirectoryEntry::getExternalId), "IP")
+                .set(field(DirectoryEntry::getType), DirectoryEntryType.DIRECTORY)
+                .set(field(DirectoryEntry::getStatus), DirectoryEntryStatus.INACTIVE)
+                .set(field(DirectoryEntry::getDeletionTimeStamp), deletionDateTime)
+                .set(field(DirectoryEntry::getParent), activeParent)
+                .create();
+        final DirectoryEntry target = Instancio.of(DirectoryEntry.class)
+                .set(field(DirectoryEntry::getExternalId), "TAR")
+                .set(field(DirectoryEntry::getType), DirectoryEntryType.DIRECTORY)
+                .set(field(DirectoryEntry::getStatus), DirectoryEntryStatus.INACTIVE)
+                .set(field(DirectoryEntry::getDeletionTimeStamp), deletionDateTime)
+                .set(field(DirectoryEntry::getParent), inactiveParent)
+                .create();
+        final DirectoryEntry child = Instancio.of(DirectoryEntry.class)
+                .set(field(DirectoryEntry::getExternalId), "CLD")
+                .set(field(DirectoryEntry::getType), DirectoryEntryType.FILE)
+                .set(field(DirectoryEntry::getStatus), DirectoryEntryStatus.INACTIVE)
+                .set(field(DirectoryEntry::getDeletionTimeStamp), deletionDateTime)
+                .set(field(DirectoryEntry::getParent), target)
+                .create();
+        when(directoryEntryRepository.findAllByParent(target)).thenReturn(List.of(child));
+
+        manipulation.markUndeleted(target);
+
+        assertEquals(DirectoryEntryStatus.ACTIVE, inactiveParent.getStatus());
+        assertEquals(DirectoryEntryStatus.ACTIVE, target.getStatus());
+        assertEquals(DirectoryEntryStatus.ACTIVE, child.getStatus());
+        assertNull(inactiveParent.getDeletionTimeStamp());
+        assertNull(target.getDeletionTimeStamp());
+        assertNull(child.getDeletionTimeStamp());
+    }
+
+    @Test
+    void test_markDeleted_markInactive() {
+        final DirectoryEntry target = Instancio.of(DirectoryEntry.class)
+                .set(field(DirectoryEntry::getExternalId), "TAR")
+                .set(field(DirectoryEntry::getType), DirectoryEntryType.DIRECTORY)
+                .set(field(DirectoryEntry::getStatus), DirectoryEntryStatus.ACTIVE)
+                .create();
+        final DirectoryEntry child = Instancio.of(DirectoryEntry.class)
+                .set(field(DirectoryEntry::getExternalId), "CLD")
+                .set(field(DirectoryEntry::getType), DirectoryEntryType.FILE)
+                .set(field(DirectoryEntry::getStatus), DirectoryEntryStatus.ACTIVE)
+                .create();
+        when(directoryEntryRepository.findAllByParent(target)).thenReturn(List.of(child));
+
+        manipulation.markDeleted(target);
+
+        assertNotNull(target.getDeletionTimeStamp());
+        assertEquals(DirectoryEntryStatus.INACTIVE, target.getStatus());
+        assertNotNull(child.getDeletionTimeStamp());
+        assertEquals(DirectoryEntryStatus.INACTIVE, child.getStatus());
+    }
+
+    @Test
+    void test_markDeleted_markRemoved() {
+        final DirectoryEntry target = Instancio.of(DirectoryEntry.class)
+                .set(field(DirectoryEntry::getExternalId), "TAR")
+                .set(field(DirectoryEntry::getType), DirectoryEntryType.DIRECTORY)
+                .set(field(DirectoryEntry::getStatus), DirectoryEntryStatus.INACTIVE)
+                .create();
+        final DirectoryEntry child = Instancio.of(DirectoryEntry.class)
+                .set(field(DirectoryEntry::getExternalId), "CLD")
+                .set(field(DirectoryEntry::getType), DirectoryEntryType.FILE)
+                .set(field(DirectoryEntry::getStatus), DirectoryEntryStatus.INACTIVE)
+                .create();
+        when(directoryEntryRepository.findAllByParent(target)).thenReturn(List.of(child));
+
+        manipulation.markDeleted(target);
+
+        assertNotNull(target.getDeletionTimeStamp());
+        assertEquals(DirectoryEntryStatus.REMOVED, target.getStatus());
+        assertNotNull(child.getDeletionTimeStamp());
+        assertEquals(DirectoryEntryStatus.REMOVED, child.getStatus());
+    }
+
+    @Test
+    void test_markDeleted_doNothing_whenAlreadyMarkedRemoved() {
+        final DirectoryEntry target = Instancio.of(DirectoryEntry.class)
+                .set(field(DirectoryEntry::getExternalId), "TAR")
+                .set(field(DirectoryEntry::getType), DirectoryEntryType.DIRECTORY)
+                .set(field(DirectoryEntry::getStatus), DirectoryEntryStatus.INACTIVE)
+                .create();
+        when(directoryEntryRepository.findAllByParent(target)).thenReturn(List.of());
+
+        manipulation.markDeleted(target);
+
+        assertNotNull(target.getDeletionTimeStamp());
+        assertEquals(DirectoryEntryStatus.REMOVED, target.getStatus());
     }
 }
