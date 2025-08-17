@@ -1,6 +1,6 @@
 package hu.szbz.hbc.doals.components;
 
-import hu.szbz.hbc.doals.endpoints.ws.dto.DirectoryEntryTypeEnum;
+import hu.szbz.hbc.doals.endpoints.ws.DirectoryEntryTypeEnum;
 import hu.szbz.hbc.doals.model.Access;
 import hu.szbz.hbc.doals.model.Actor;
 import hu.szbz.hbc.doals.model.DirectoryEntry;

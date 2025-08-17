@@ -1,8 +1,8 @@
 package hu.szbz.hbc.doals.repositories;
 
-import hu.szbz.hbc.doals.endpoints.ws.dto.NameConditionDto;
-import hu.szbz.hbc.doals.endpoints.ws.dto.SearchParametersDto;
-import hu.szbz.hbc.doals.endpoints.ws.dto.TimeStampRangeDto;
+import hu.szbz.hbc.doals.endpoints.ws.NameConditionDto;
+import hu.szbz.hbc.doals.endpoints.ws.SearchParametersDto;
+import hu.szbz.hbc.doals.endpoints.ws.TimeStampRangeDto;
 import hu.szbz.hbc.doals.model.Access;
 import hu.szbz.hbc.doals.model.Access_;
 import hu.szbz.hbc.doals.model.Actor;

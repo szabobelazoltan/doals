@@ -1,6 +1,6 @@
 package hu.szbz.hbc.doals.exceptions;
 
-import hu.szbz.hbc.doals.endpoints.ws.dto.ResponseHeaderDto;
+import hu.szbz.hbc.doals.endpoints.ws.ResponseHeaderDto;
 
 public class ServiceException extends RuntimeException {
     private static final long serialVersionUID = 4233643905197275137L;

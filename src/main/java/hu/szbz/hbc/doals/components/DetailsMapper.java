@@ -1,10 +1,10 @@
 package hu.szbz.hbc.doals.components;
 
-import hu.szbz.hbc.doals.endpoints.ws.dto.AccessDto;
-import hu.szbz.hbc.doals.endpoints.ws.dto.AccessRoleEnum;
-import hu.szbz.hbc.doals.endpoints.ws.dto.DirectoryEntriesPageDto;
-import hu.szbz.hbc.doals.endpoints.ws.dto.DirectoryEntryBasicInfoDto;
-import hu.szbz.hbc.doals.endpoints.ws.dto.DirectoryEntryListItemDto;
+import hu.szbz.hbc.doals.endpoints.ws.AccessDto;
+import hu.szbz.hbc.doals.endpoints.ws.AccessRoleEnum;
+import hu.szbz.hbc.doals.endpoints.ws.DirectoryEntriesPageDto;
+import hu.szbz.hbc.doals.endpoints.ws.DirectoryEntryBasicInfoDto;
+import hu.szbz.hbc.doals.endpoints.ws.DirectoryEntryListItemDto;
 import hu.szbz.hbc.doals.model.Access;
 import hu.szbz.hbc.doals.model.DirectoryEntry;
 import hu.szbz.hbc.doals.model.DirectoryEntryListItem;

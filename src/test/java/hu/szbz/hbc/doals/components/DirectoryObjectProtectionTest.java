@@ -1,6 +1,6 @@
 package hu.szbz.hbc.doals.components;
 
-import hu.szbz.hbc.doals.endpoints.ws.dto.ResponseHeaderDto;
+import hu.szbz.hbc.doals.endpoints.ws.ResponseHeaderDto;
 import hu.szbz.hbc.doals.exceptions.ErrorCode;
 import hu.szbz.hbc.doals.exceptions.ServiceException;
 import hu.szbz.hbc.doals.model.Access;

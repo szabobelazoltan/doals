@@ -107,18 +107,18 @@
 							<packageName>hu.szbz.hbc.doals.endpoints.mq.dto</packageName>
 						</configuration>
 					</execution>
-					<execution>
-						<id>ws-schema</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>src/main/jaxb/ws.xsd</source>
-							</sources>
-							<packageName>hu.szbz.hbc.doals.endpoints.ws.dto</packageName>
-						</configuration>
-					</execution>
+<!--					<execution>-->
+<!--						<id>ws-schema</id>-->
+<!--						<goals>-->
+<!--							<goal>xjc</goal>-->
+<!--						</goals>-->
+<!--						<configuration>-->
+<!--							<sources>-->
+<!--								<source>src/main/jaxb/ws.xsd</source>-->
+<!--							</sources>-->
+<!--							<packageName>hu.szbz.hbc.doals.endpoints.ws.dto</packageName>-->
+<!--						</configuration>-->
+<!--					</execution>-->
 				</executions>
 				<configuration>
 					<xjbSources>
@@ -149,6 +149,30 @@
 						<!-- other annotation processors -->
 					</annotationProcessorPaths>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.sun.xml.ws</groupId>
+				<artifactId>jaxws-maven-plugin</artifactId>
+				<version>4.0.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>wsimport</goal>
+						</goals>
+						<configuration>
+							<wsdlDirectory>${project.basedir}/src/main/jaxb/</wsdlDirectory>
+<!--							<wsdlFiles>-->
+<!--								<wsdlFile>DirectoryEntryService.wsdl</wsdlFile>-->
+<!--							</wsdlFiles>-->
+							<packageName>hu.szbz.hbc.doals.endpoints.ws</packageName>
+							<bindingDirectory>${project.basedir}/src/main/jaxb/</bindingDirectory>
+							<bindingFiles>
+								<bindingFile>global.xjb</bindingFile>
+							</bindingFiles>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
