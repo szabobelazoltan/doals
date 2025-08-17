@@ -67,7 +67,7 @@ public class DirectoryEntryManagerService {
         return rp;
     }
 
-    public SearchDirectoryEntriesRp listDirectoryEntries(SearchDirectoryEntriesRq rq) {
+    public SearchDirectoryEntriesRp search(SearchDirectoryEntriesRq rq) {
         final Actor actor = actorRegistry.getActor(rq.getHeader().getUserId());
         final DirectoryEntriesPageDto list = query.search(actor, rq.getBody().getSearchParameters(), rq.getBody().getPageParameters());
         final SearchDirectoryEntriesRp rp = new SearchDirectoryEntriesRp();
