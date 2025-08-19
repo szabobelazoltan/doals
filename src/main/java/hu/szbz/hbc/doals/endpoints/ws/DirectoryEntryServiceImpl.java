@@ -22,8 +22,8 @@ public class DirectoryEntryServiceImpl implements DirectoryEntryServicePort {
     }
 
     @Override
-    public void deleteDirectoryEntry(Holder<DeleteDirectoryEntryRp> parameters) {
-        //SoapUtil.processRequest(managerService::getDetails, GetDirectoryEntryDetailsRp::new, parameters);
+    public DeleteDirectoryEntryRp deleteDirectoryEntry(DeleteDirectoryEntryRq parameters) {
+        return SoapUtil.processRequest(managerService::deleteDirectoryEntry, DeleteDirectoryEntryRp::new, parameters);
     }
 
     @Override

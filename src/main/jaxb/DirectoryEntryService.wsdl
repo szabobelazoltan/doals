@@ -32,7 +32,7 @@
         <wsdl:part name="parameters" element="dto:GetDirectoryEntryDetailsRp"></wsdl:part>
     </wsdl:message>
     <wsdl:message name="DeleteDirectoryEntryRequest">
-        <wsdl:part name="parameters" element="dto:DeleteDirectoryEntryRp"></wsdl:part>
+        <wsdl:part name="parameters" element="dto:DeleteDirectoryEntryRq"></wsdl:part>
     </wsdl:message>
     <wsdl:message name="DeleteDirectoryEntryResponse">
         <wsdl:part name="parameters" element="dto:DeleteDirectoryEntryRp"></wsdl:part>
